@@ -21,7 +21,6 @@ def test_login_then_search_and_sell_product_visible():
         page.goto(LOGIN_URL)
         page.wait_for_load_state("domcontentloaded")
 
-        (type)
         page.locator("input[type='email']").fill(EMAIL)
         page.locator("input[type='password']").fill(PASSWORD)
 
