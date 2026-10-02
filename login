@@ -1,50 +1,48 @@
-"""
-اختبار: تسجيل الدخول ثم التأكد إن عنصري "Search" و "Sell your product" ظاهرين في صفحة الإشعارات
-"""
-
-import os
+```python
 from playwright.sync_api import sync_playwright, expect
 
-LOGIN_URL = "https://on-ruf-uat.vercel.app/login" 
-NOTIFICATIONS_URL = "https://on-ruf-uat.vercel.app/notifications"
+LOGIN_URL = "https://www.saucedemo.com/"
 
-EMAIL = os.environ.get("TEST_EMAIL", "your_email@example.com")
-PASSWORD = os.environ.get("TEST_PASSWORD", "your_password")
+USERNAME = "standard_user"
+PASSWORD = "secret_sauce"
 
 
-def test_login_then_search_and_sell_product_visible():
+def test_login_add_remove_product():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)  
+        browser = p.chromium.launch(headless=False)
         page = browser.new_page()
 
-        # افتح صفحة تسجيل الدخول
         page.goto(LOGIN_URL)
-        page.wait_for_load_state("domcontentloaded")
-
-        page.locator("input[type='email']").fill(EMAIL)
-        page.locator("input[type='password']").fill(PASSWORD)
-
-        # دوس على زرار "Sign In"
-        page.get_by_role("button", name="Sign In").click()
-
-        page.wait_for_timeout(3000)
-
-        
-        page.goto(NOTIFICATIONS_URL)
-        page.wait_for_load_state("domcontentloaded")
         page.wait_for_timeout(2000)
 
-        search_element = page.get_by_text("Search", exact=False)
-        expect(search_element.first).to_be_visible()
-        print("✅ عنصر 'Search' ظاهر في الصفحة")
+        page.locator("input[type='text']").fill(USERNAME)
+        page.wait_for_timeout(2000)
 
-        "Sell your product"
-        sell_element = page.get_by_text("Sell your product", exact=False)
-        expect(sell_element.first).to_be_visible()
-        print("✅ عنصر 'Sell your product' ظاهر في الصفحة")
+        page.locator("input[type='password']").fill(PASSWORD)
+        page.wait_for_timeout(2000)
 
-        auction_element = page.get_by_text("Auction", exact=False)
-        expect(auction_element.first).to_be_visible()
-        print("✅ زرار 'Auction' ظاهر في الصفحة")
+        page.get_by_role("button", name="Login").click()
+        page.wait_for_timeout(3000)
+
+        expect(page.locator(".title")).to_have_text("Products")
+        print("Login successful")
+
+        page.locator('[data-test="add-to-cart-sauce-labs-backpack"]').click()
+        page.wait_for_timeout(3000)
+
+        expect(page.locator(".shopping_cart_badge")).to_have_text("1")
+        print("Product added to cart")
+
+        page.locator(".shopping_cart_link").click()
+        page.wait_for_timeout(3000)
+
+        page.get_by_role("button", name="Remove").click()
+        page.wait_for_timeout(3000)
+
+        expect(page.locator(".cart_item")).to_have_count(0)
+        print("Product removed from cart")
+
+        page.wait_for_timeout(5000)
 
         browser.close()
+```
