@@ -5,7 +5,7 @@
 import os
 from playwright.sync_api import sync_playwright, expect
 
-LOGIN_URL = "https://on-ruf-uat.vercel.app/login" 
+LOGIN_URL = "https://on-ruf-uat.vercel.app/login"  # غيّر ده لو رابط تسجيل الدخول مختلف
 NOTIFICATIONS_URL = "https://on-ruf-uat.vercel.app/notifications"
 
 EMAIL = os.environ.get("TEST_EMAIL", "your_email@example.com")
@@ -21,7 +21,7 @@ def test_login_then_search_and_sell_product_visible():
         page.goto(LOGIN_URL)
         page.wait_for_load_state("domcontentloaded")
 
-        (type)
+        # املأ الإيميل والباسورد باستخدام نوع الحقل (type)
         page.locator("input[type='email']").fill(EMAIL)
         page.locator("input[type='password']").fill(PASSWORD)
 
@@ -30,20 +30,23 @@ def test_login_then_search_and_sell_product_visible():
 
         page.wait_for_timeout(3000)
 
-        
+        # روح لصفحة الإشعارات
         page.goto(NOTIFICATIONS_URL)
         page.wait_for_load_state("domcontentloaded")
         page.wait_for_timeout(2000)
 
+        # تأكد إن عنصر "Search" ظاهر
         search_element = page.get_by_text("Search", exact=False)
         expect(search_element.first).to_be_visible()
         print("✅ عنصر 'Search' ظاهر في الصفحة")
 
-        "Sell your product"
+        # تأكد إن عنصر "Sell your product" ظاهر
         sell_element = page.get_by_text("Sell your product", exact=False)
         expect(sell_element.first).to_be_visible()
         print("✅ عنصر 'Sell your product' ظاهر في الصفحة")
 
+        # تأكد إن زرار "Auction" (المزاد) ظاهر
+    
         auction_element = page.get_by_text("Auction", exact=False)
         expect(auction_element.first).to_be_visible()
         print("✅ زرار 'Auction' ظاهر في الصفحة")
