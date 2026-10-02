@@ -1,4 +1,4 @@
-```python
+
 from playwright.sync_api import sync_playwright, expect
 
 LOGIN_URL = "https://www.saucedemo.com/"
@@ -45,4 +45,3 @@ def test_login_add_remove_product():
         page.wait_for_timeout(5000)
 
         browser.close()
-```
